@@ -1,0 +1,29 @@
+[project]
+name = "chd-scraper"
+version = "2.0.0"
+description = "High-fidelity scraper for Trussel's Combined Hawaiian Dictionary"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+    "pydantic>=2.0",
+    "requests>=2.31",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["chd*"]
