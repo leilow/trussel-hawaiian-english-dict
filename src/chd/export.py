@@ -32,23 +32,49 @@ def _apply_pos_mapping(entries: list[Entry]) -> None:
 
 
 def export_haw_eng(raw_dir: Path = RAW_DIR, out_dir: Path = PROCESSED_DIR) -> list[Entry]:
-    """Parse and export all Hawaiian-English entries."""
+    """Parse and export all Hawaiian-English entries (deduped, with topical-only merged)."""
     print("Parsing Hawaiian-English pages...")
     results = parse_all_haw_eng(raw_dir)
 
     haw_eng_dir = out_dir / "haw_eng"
     all_entries: list[Entry] = []
 
+    # Phase 1: Core letter pages
+    core_ids: set[str] = set()
     for letter, (entries, ctx) in sorted(results.items()):
-        # Skip topical pages (not core letter pages)
         if len(letter) > 1 and letter not in ("aa",):
             continue
         _apply_pos_mapping(entries)
+        for e in entries:
+            if e.id:
+                core_ids.add(e.id)
         data = [e.model_dump(exclude_defaults=True) for e in entries]
         _write_json(data, haw_eng_dir / f"{letter}.json")
         all_entries.extend(entries)
         errors = len(ctx.errors)
         print(f"  {letter}: {len(entries)} entries" + (f" ({errors} errors)" if errors else ""))
+
+    # Phase 2: Merge topical-only entries (not in core pages)
+    topical_only: list[Entry] = []
+    topical_pages: list[str] = []
+    for letter, (entries, ctx) in sorted(results.items()):
+        if len(letter) <= 1 or letter == "aa":
+            continue
+        topical_pages.append(letter)
+        for e in entries:
+            if e.id and e.id not in core_ids:
+                # Tag with topic and add to core
+                if letter not in e.topics:
+                    e.topics.append(letter)
+                _apply_pos_mapping([e])
+                topical_only.append(e)
+                core_ids.add(e.id)
+
+    if topical_only:
+        data = [e.model_dump(exclude_defaults=True) for e in topical_only]
+        _write_json(data, haw_eng_dir / "topical_only.json")
+        all_entries.extend(topical_only)
+        print(f"  topical-only: {len(topical_only)} unique entries from {len(topical_pages)} pages")
 
     print(f"  Total: {len(all_entries)} entries")
     return all_entries

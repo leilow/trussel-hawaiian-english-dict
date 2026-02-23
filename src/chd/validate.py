@@ -13,15 +13,29 @@ def validate_link_resolution(entries: list[Entry]) -> dict:
 
     Returns a report dict with resolution rates and unresolved links.
     """
-    # Build anchor index
+    # Build anchor index with multiple matching strategies
     anchor_set = set()
     headword_set = set()
+    ascii_nospace_set = set()
     for e in entries:
         if e.id:
             anchor_set.add(e.id)
         headword_set.add(e.headword)
         headword_set.add(to_ascii(e.headword))
         headword_set.add(e.headword_display)
+        # ASCII with spaces/hyphens stripped for multi-word compound matching
+        ascii_ns = to_ascii(e.headword).replace(" ", "").replace("-", "").lower()
+        ascii_nospace_set.add(ascii_ns)
+
+    def _resolves(target: str) -> bool:
+        if target in anchor_set or target in headword_set:
+            return True
+        ascii_t = to_ascii(target)
+        if ascii_t in headword_set:
+            return True
+        # Try as concatenated ASCII (handles multi-word compound anchors)
+        ascii_ns = target.replace(" ", "").replace("-", "").lower()
+        return ascii_ns in ascii_nospace_set
 
     # Check cross-refs
     xref_total = 0
@@ -31,7 +45,7 @@ def validate_link_resolution(entries: list[Entry]) -> dict:
         for xref in e.cross_refs:
             xref_total += 1
             target = xref.target_anchor or xref.target_headword
-            if target in anchor_set or target in headword_set or to_ascii(target) in headword_set:
+            if _resolves(target):
                 xref_resolved += 1
             else:
                 xref_unresolved.append({
@@ -50,7 +64,7 @@ def validate_link_resolution(entries: list[Entry]) -> dict:
             for lw in sense.linked_words:
                 link_total += 1
                 target = lw.target_anchor or lw.surface
-                if target in anchor_set or target in headword_set or to_ascii(target) in headword_set:
+                if _resolves(target):
                     link_resolved += 1
 
     xref_rate = (xref_resolved / xref_total * 100) if xref_total else 0
