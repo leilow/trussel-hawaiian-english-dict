@@ -1,65 +1,81 @@
-import Image from "next/image";
+import Link from "next/link";
+import { SearchBar } from "@/components/SearchBar";
 
-export default function Home() {
+const stats = [
+  { label: "Entries", value: "59,417" },
+  { label: "Definitions", value: "69,847" },
+  { label: "Concordance", value: "133,684" },
+  { label: "Sources", value: "5" },
+];
+
+const quickLinks = [
+  { href: "/browse", title: "Browse by Letter", description: "Explore entries alphabetically through the Hawaiian alphabet" },
+  { href: "/topics", title: "Topics", description: "Find words organized by subject: animals, plants, stars, and more" },
+  { href: "/concordance", title: "Concordance", description: "Search through sentences from Hawaiian language texts" },
+  { href: "/word-lists", title: "Word Lists", description: "Historical word lists from early Western visitors to Hawaiʻi" },
+];
+
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      {/* Hero */}
+      <section className="py-16 sm:py-24 text-center">
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
+          Trussel Hawaiian-English Dictionary
+        </h1>
+        <p className="text-lg text-muted mb-8 max-w-2xl mx-auto">
+          A comprehensive merged dictionary of the Hawaiian language
+        </p>
+        <SearchBar />
+      </section>
+
+      {/* Stats Row */}
+      <section className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-16">
+        {stats.map((stat) => (
+          <div key={stat.label} className="card p-5 text-center">
+            <div className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
+              {stat.value}
+            </div>
+            <div className="font-mono text-xs uppercase tracking-wider text-muted">
+              {stat.label}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* Word of the Day */}
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold mb-4">Word of the Day</h2>
+        <div className="card p-6">
+          <div className="flex items-center gap-3 mb-3">
+            <Link href="/entry/1" className="text-2xl font-bold text-foreground hover:text-accent transition-colors">
+              aloha
+            </Link>
+            <span className="source-badge bg-source-pe/15 text-source-pe">PE</span>
+          </div>
+          <p className="text-muted leading-relaxed">
+            Love, affection, compassion, mercy, sympathy, pity, kindness, sentiment, grace, charity;
+            greeting, salutation, regards; sweetheart, lover, loved one; beloved, loving, kind,
+            compassionate, charitable, lovable; to love, be fond of; to show kindness, mercy,
+            pity, charity, affection; to venerate; to remember with affection; to greet, hail.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Quick Links */}
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold mb-4">Explore</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {quickLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="block">
+              <div className="card p-5 h-full hover:shadow-md transition-shadow">
+                <h3 className="font-semibold text-foreground mb-2">{link.title}</h3>
+                <p className="text-sm text-muted">{link.description}</p>
+              </div>
+            </Link>
+          ))}
         </div>
-      </main>
+      </section>
     </div>
   );
 }
