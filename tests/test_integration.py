@@ -38,10 +38,10 @@ class TestFullPipeline:
         assert "total_concordance" in summary
 
     def test_haw_eng_count_sanity(self, export_result):
-        """Total deduplicated entries ~59K (core letter pages only, topical pages excluded)."""
+        """Total deduplicated entries ~59K+ (core + topical-only merged)."""
         summary, _ = export_result
         total = summary["total_haw_eng"]
-        assert total > 55_000, f"Too few entries: {total}"
+        assert total > 59_000, f"Too few entries: {total}"
         assert total < 65_000, f"Too many entries: {total}"
 
     def test_eng_haw_exists(self, export_result):
@@ -95,7 +95,7 @@ class TestJsonOutput:
         summary_path = out_dir / "summary.json"
         assert summary_path.exists()
         data = json.loads(summary_path.read_text())
-        assert data["total_haw_eng"] > 55_000
+        assert data["total_haw_eng"] > 59_000
 
     def test_validation_report_json(self, export_result):
         _, out_dir = export_result
@@ -127,7 +127,7 @@ class TestValidation:
         _, out_dir = export_result
         report = json.loads((out_dir / "validation_report.json").read_text())
         rate = report["link_resolution"]["cross_refs"]["resolution_rate"]
-        assert rate > 75, f"Cross-ref resolution only {rate}%"
+        assert rate > 90, f"Cross-ref resolution only {rate}%"
 
     def test_linked_word_resolution_rate(self, export_result):
         _, out_dir = export_result
