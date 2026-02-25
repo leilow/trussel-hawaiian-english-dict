@@ -1,30 +1,31 @@
 import type { Metadata } from "next";
-import { Lora, Red_Hat_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { ThemeProvider } from "@/components/ThemeProvider";
-
-const lora = Lora({
-  variable: "--font-lora",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const redHatMono = Red_Hat_Mono({
-  variable: "--font-redhat-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: {
-    default: "Trussel Hawaiian-English Dictionary",
-    template: "%s | Trussel Hawaiian-English Dictionary",
+    default: "Trussel Hawaiian-English Dictionary — Test UI",
+    template: "%s | Trussel Test UI",
   },
-  description:
-    "A comprehensive Hawaiian-English dictionary merging Pukui & Elbert, Māmaka Kaiao, Andrews, and more. 59,000+ entries with etymologies, examples, and concordance.",
+  description: "Data validation browser for the Combined Hawaiian Dictionary scraper.",
 };
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/browse", label: "Haw-Eng" },
+  { href: "/eng-haw", label: "Eng-Haw" },
+  { href: "/concordance", label: "Concordance" },
+  { href: "/topics", label: "Topics" },
+  { href: "/references", label: "References" },
+  { href: "/sources", label: "Sources" },
+  { href: "/prefaces", label: "Prefaces" },
+  { href: "/wordlists", label: "Wordlists" },
+  { href: "/gloss-sources", label: "Glosses" },
+  { href: "/images", label: "Images" },
+  { href: "/pages", label: "Pages" },
+  { href: "/statistics", label: "Stats" },
+  { href: "/search", label: "Search" },
+];
 
 export default function RootLayout({
   children,
@@ -32,22 +33,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`,
-          }}
-        />
-      </head>
-      <body
-        className={`${lora.variable} ${redHatMono.variable} antialiased min-h-screen flex flex-col`}
-      >
-        <ThemeProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </ThemeProvider>
+    <html lang="en">
+      <body>
+        <nav className="main-nav">
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="container">{children}</div>
       </body>
     </html>
   );

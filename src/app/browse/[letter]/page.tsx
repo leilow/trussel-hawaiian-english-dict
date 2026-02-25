@@ -1,68 +1,63 @@
-import { LetterNav } from "@/components/LetterNav";
-import { EntryCard } from "@/components/EntryCard";
+import Link from "next/link";
+import { getEntriesByLetter } from "@/lib/queries";
+import { HawaiianLetterNav, SourceBadges, Pagination } from "@/components/shared";
 
-const mockEntriesByLetter: Record<string, Array<{ id: string; headword: string; source: string; definition: string }>> = {
-  a: [
-    { id: "1", headword: "aloha", source: "PE", definition: "Love, affection, compassion, mercy, sympathy, pity, kindness." },
-    { id: "2", headword: "aloha ʻāina", source: "PE", definition: "Love of the land, patriotism." },
-    { id: "7", headword: "ahi", source: "PE", definition: "Fire; to burn." },
-    { id: "8", headword: "ahupuaʻa", source: "PE", definition: "Land division usually extending from the uplands to the sea." },
-    { id: "9", headword: "ʻai", source: "PE", definition: "Food, especially vegetable food as distinguished from iʻa; to eat." },
-    { id: "10", headword: "aikāne", source: "PE", definition: "Friend, friendly." },
-    { id: "11", headword: "ʻaina", source: "PE", definition: "Meal, to eat." },
-    { id: "12", headword: "akua", source: "PE", definition: "God, goddess, spirit, ghost, devil, image, idol." },
-    { id: "13", headword: "ala", source: "PE", definition: "Path, road, trail; to wake up, to rise." },
-    { id: "14", headword: "aliʻi", source: "PE", definition: "Chief, chiefess, ruler, monarch, queen, king." },
-  ],
-};
-
-function getMockEntries(letter: string) {
-  if (mockEntriesByLetter[letter]) return mockEntriesByLetter[letter];
-  // Generate plausible entries for other letters
-  const letterUpper = letter.replace("ʻ", "").toUpperCase();
-  return Array.from({ length: 10 }, (_, i) => ({
-    id: `${letter}-${i}`,
-    headword: `${letter}${["ala", "ele", "iki", "oku", "ulu", "ane", "imo", "ope", "una", "ahi"][i]}`,
-    source: ["PE", "MK", "Andrews", "PE", "PE", "MK", "PE", "Andrews", "PE", "PE"][i],
-    definition: `Definition for ${letter}-word ${i + 1}. A common Hawaiian word starting with ${letterUpper}.`,
-  }));
-}
+const ITEMS_PER_PAGE = 100;
 
 export default async function BrowseLetterPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ letter: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { letter } = await params;
-  const decodedLetter = decodeURIComponent(letter);
-  const entries = getMockEntries(decodedLetter);
+  const sp = await searchParams;
+  const decoded = decodeURIComponent(letter);
+  const page = Math.max(1, parseInt(sp.page || "1", 10));
+
+  const { entries, total } = await getEntriesByLetter(decoded, page, ITEMS_PER_PAGE);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <div className="mb-8">
-        <LetterNav activeLetter={decodedLetter} />
-      </div>
+    <>
+      <h1>Hawaiian-English: {decoded.toUpperCase()}</h1>
+      <HawaiianLetterNav basePath="/browse" activeLetter={decoded} />
+      <p className="small muted">{total.toLocaleString()} entries</p>
 
-      <h1 className="text-3xl font-bold mb-6">
-        Entries starting with <span className="text-accent">{decodedLetter.toUpperCase()}</span>
-      </h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Headword</th>
+            <th>Sources</th>
+            <th>First Definition</th>
+          </tr>
+        </thead>
+        <tbody>
+          {entries.map((e) => (
+            <tr key={e.id}>
+              <td>
+                <Link href={`/entry/${e.id}`}>
+                  {e.headword_display || e.headword}
+                  {e.subscript && <sub>{e.subscript}</sub>}
+                </Link>
+              </td>
+              <td>
+                <SourceBadges in_pe={e.in_pe} in_mk={e.in_mk} in_andrews={e.in_andrews} is_from_eh_only={e.is_from_eh_only} />
+              </td>
+              <td className="small">{e.sense?.[0]?.definition_text?.slice(0, 120) || "—"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      <div className="space-y-3 mb-8">
-        {entries.map((entry) => (
-          <EntryCard
-            key={entry.id}
-            id={entry.id}
-            headword={entry.headword}
-            source={entry.source}
-            definition={entry.definition}
-          />
-        ))}
-      </div>
+      {entries.length === 0 && <p className="muted">No entries found.</p>}
 
-      {/* Pagination placeholder */}
-      <div className="text-center text-sm text-muted font-mono">
-        Showing 1&ndash;10 of 3,241
-      </div>
-    </div>
+      <Pagination
+        currentPage={page}
+        totalItems={total}
+        itemsPerPage={ITEMS_PER_PAGE}
+        basePath={`/browse/${encodeURIComponent(decoded)}`}
+      />
+    </>
   );
 }

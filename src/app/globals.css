@@ -1,98 +1,203 @@
 @import "tailwindcss";
 
 :root {
-  --background: rgb(254, 249, 237);
-  --foreground: rgb(38, 30, 13);
-  --muted: #5a4f3f;
-  --card: rgba(255, 255, 255, 0.6);
-  --card-border: rgba(38, 30, 13, 0.08);
-  --accent: rgb(45, 150, 140);
-
-  /* Source colors */
-  --source-pe: rgb(45, 150, 140);
-  --source-mk: rgb(210, 120, 100);
-  --source-andrews: rgb(120, 155, 120);
-  --source-eh: rgb(200, 170, 80);
-  --source-other: rgb(150, 140, 125);
-}
-
-.dark {
-  --background: rgb(28, 22, 12);
-  --foreground: rgb(245, 238, 220);
-  --muted: #a89e8a;
-  --card: rgba(40, 34, 22, 0.6);
-  --card-border: rgba(245, 238, 220, 0.1);
-  --accent: rgb(75, 190, 180);
-
-  --source-pe: rgb(75, 190, 180);
-  --source-mk: rgb(230, 145, 125);
-  --source-andrews: rgb(145, 180, 145);
-  --source-eh: rgb(220, 195, 110);
-  --source-other: rgb(175, 165, 150);
+  --bg: #fffdf7;
+  --fg: #1a1a2e;
+  --muted: #666;
+  --accent: #1a1a2e;
+  --link: #2a5a8a;
+  --border: #ccc;
+  --hover-bg: #f5f0e0;
+  --source-pe: #1a1a5e;
+  --source-mk: #8b2020;
+  --source-andrews: #2a6e2a;
+  --source-eh: #8a7020;
+  --source-other: #666;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
   --color-muted: var(--muted);
-  --color-card: var(--card);
-  --color-card-border: var(--card-border);
   --color-accent: var(--accent);
-  --color-source-pe: var(--source-pe);
-  --color-source-mk: var(--source-mk);
-  --color-source-andrews: var(--source-andrews);
-  --color-source-eh: var(--source-eh);
-  --color-source-other: var(--source-other);
-  --font-serif: var(--font-lora);
-  --font-mono: var(--font-redhat-mono);
+  --color-link: var(--link);
+  --color-border: var(--border);
+  --color-hover-bg: var(--hover-bg);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-lora), Georgia, "Times New Roman", serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: Georgia, "Times New Roman", serif;
+  margin: 0;
+  line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Times New Roman", Times, Georgia, serif;
+  color: var(--accent);
+  font-family: Georgia, "Times New Roman", serif;
 }
 
-/* Glassmorphism card */
-.card {
-  background: var(--card);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--card-border);
-  border-radius: 0.5rem;
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 
-/* Source badge base */
-.source-badge {
-  font-family: var(--font-redhat-mono), monospace;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+/* Plain HTML tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.9rem;
+}
+
+th {
+  background: #f0ece0;
+  font-weight: bold;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  padding: 0.125rem 0.5rem;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
+  letter-spacing: 0.03em;
 }
+
+tr:hover {
+  background: var(--hover-bg);
+}
+
+/* Source badges */
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: white;
+  margin-right: 3px;
+}
+.badge-pe { background: var(--source-pe); }
+.badge-mk { background: var(--source-mk); }
+.badge-andrews { background: var(--source-andrews); }
+.badge-eh { background: var(--source-eh); }
+.badge-other { background: var(--source-other); }
 
 /* Letter nav */
-.letter-link {
-  font-family: var(--font-redhat-mono), monospace;
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
-  transition: background-color 0.15s, color 0.15s;
+.letter-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
-
-.letter-link:hover {
+.letter-nav a {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  text-decoration: none;
+  color: var(--fg);
+}
+.letter-nav a:hover {
+  background: var(--hover-bg);
+  text-decoration: none;
+}
+.letter-nav a.active {
   background: var(--accent);
   color: white;
+  border-color: var(--accent);
 }
 
-.letter-link.active {
+/* Pagination */
+.pagination {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+.pagination a, .pagination span {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 0.85rem;
+}
+.pagination a:hover {
+  background: var(--hover-bg);
+  text-decoration: none;
+}
+.pagination .current {
   background: var(--accent);
   color: white;
+  border-color: var(--accent);
 }
+
+/* Nav bar */
+nav.main-nav {
+  background: var(--accent);
+  padding: 8px 16px;
+}
+nav.main-nav a {
+  color: white;
+  margin-right: 16px;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+nav.main-nav a:hover {
+  text-decoration: underline;
+}
+
+/* Container */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 1rem;
+}
+
+/* Mark highlights */
+mark {
+  background: #fff3b0;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Detail sections */
+.detail-section {
+  margin-bottom: 1.5rem;
+}
+.detail-section h2 {
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+/* Inline definition list */
+.def-list dt {
+  font-weight: bold;
+  float: left;
+  clear: left;
+  margin-right: 8px;
+}
+.def-list dd {
+  margin-left: 0;
+  margin-bottom: 4px;
+}
+
+/* Small text */
+.small { font-size: 0.85rem; }
+.muted { color: var(--muted); }
+.mono { font-family: monospace; font-size: 0.85rem; }

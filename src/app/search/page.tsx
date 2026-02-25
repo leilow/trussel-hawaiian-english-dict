@@ -1,77 +1,132 @@
 import Link from "next/link";
-import { SearchBar } from "@/components/SearchBar";
-import { EntryCard } from "@/components/EntryCard";
+import { searchEntries, searchEngHaw } from "@/lib/queries";
+import { SourceBadges, Pagination } from "@/components/shared";
 
-const mockResults = [
-  { id: "1", headword: "aloha", source: "PE", pos: "n., v.t., interj.", definition: "Love, affection, compassion, mercy, sympathy, pity, kindness, sentiment, grace, charity; greeting, salutation, regards." },
-  { id: "2", headword: "aloha ʻāina", source: "PE", pos: "n.", definition: "Love of the land, patriotism." },
-  { id: "3", headword: "aloha ʻoe", source: "PE", pos: "interj.", definition: "Farewell to you, may you be loved. Title of a famous song composed by Queen Liliʻuokalani." },
-  { id: "4", headword: "alohilani", source: "PE", pos: "n.", definition: "Bright sky, brightness." },
-  { id: "5", headword: "alohi", source: "PE", pos: "v.i.", definition: "To shine, sparkle, glitter." },
-];
+const ITEMS_PER_PAGE = 50;
 
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; type?: string }>;
+  searchParams: Promise<{ q?: string; type?: string; page?: string }>;
 }) {
-  const { q, type } = await searchParams;
+  const { q, type, page: pageStr } = await searchParams;
   const searchType = type || "haw-eng";
+  const page = Math.max(1, parseInt(pageStr || "1", 10));
+
+  let hawResults: Awaited<ReturnType<typeof searchEntries>> | null = null;
+  let engResults: Awaited<ReturnType<typeof searchEngHaw>> | null = null;
+
+  if (q) {
+    if (searchType === "haw-eng") {
+      hawResults = await searchEntries(q, page, ITEMS_PER_PAGE);
+    } else {
+      engResults = await searchEngHaw(q, page, ITEMS_PER_PAGE);
+    }
+  }
+
+  const totalResults = searchType === "haw-eng" ? (hawResults?.total ?? 0) : (engResults?.total ?? 0);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <div className="mb-8">
-        <SearchBar defaultValue={q || ""} />
-      </div>
+    <>
+      <h1>Search</h1>
 
-      {/* Tab Bar */}
-      <div className="flex gap-1 mb-8 border-b border-card-border">
-        <Link
-          href={q ? `/search?q=${encodeURIComponent(q)}&type=haw-eng` : "/search?type=haw-eng"}
-          className={`px-4 py-2 font-mono text-sm border-b-2 transition-colors ${
-            searchType === "haw-eng"
-              ? "border-accent text-foreground"
-              : "border-transparent text-muted hover:text-foreground"
-          }`}
-        >
-          Hawaiian-English
-        </Link>
-        <Link
-          href={q ? `/search?q=${encodeURIComponent(q)}&type=eng-haw` : "/search?type=eng-haw"}
-          className={`px-4 py-2 font-mono text-sm border-b-2 transition-colors ${
-            searchType === "eng-haw"
-              ? "border-accent text-foreground"
-              : "border-transparent text-muted hover:text-foreground"
-          }`}
-        >
-          English-Hawaiian
-        </Link>
-      </div>
+      {/* Search form */}
+      <form action="/search" method="get" style={{ marginBottom: 16 }}>
+        <input
+          type="text"
+          name="q"
+          defaultValue={q || ""}
+          placeholder="Search..."
+          style={{ padding: "6px 10px", fontSize: "1rem", width: 300, border: "1px solid #ccc", borderRadius: 3 }}
+        />
+        <input type="hidden" name="type" value={searchType} />
+        <button type="submit" style={{ padding: "6px 16px", marginLeft: 4, cursor: "pointer" }}>Go</button>
+      </form>
 
-      {/* Results */}
+      {/* Tabs */}
+      <p>
+        <Link href={q ? `/search?q=${encodeURIComponent(q)}&type=haw-eng` : "/search?type=haw-eng"}>
+          {searchType === "haw-eng" ? <strong>[Hawaiian-English]</strong> : "Hawaiian-English"}
+        </Link>
+        {" | "}
+        <Link href={q ? `/search?q=${encodeURIComponent(q)}&type=eng-haw` : "/search?type=eng-haw"}>
+          {searchType === "eng-haw" ? <strong>[English-Hawaiian]</strong> : "English-Hawaiian"}
+        </Link>
+      </p>
+
       {!q ? (
-        <div className="text-center py-16">
-          <p className="text-muted text-lg">Enter a search term above</p>
-        </div>
+        <p className="muted">Enter a search term above.</p>
       ) : (
-        <div>
-          <p className="text-sm text-muted mb-4">
-            {mockResults.length} results for <span className="font-semibold text-foreground">&ldquo;{q}&rdquo;</span>
-          </p>
-          <div className="space-y-3">
-            {mockResults.map((entry) => (
-              <EntryCard
-                key={entry.id}
-                id={entry.id}
-                headword={entry.headword}
-                source={entry.source}
-                definition={entry.definition}
-                pos={entry.pos}
-              />
-            ))}
-          </div>
-        </div>
+        <>
+          <p className="small muted">{totalResults.toLocaleString()} results for &ldquo;{q}&rdquo;</p>
+
+          {searchType === "haw-eng" && hawResults && (
+            <table>
+              <thead>
+                <tr>
+                  <th>Headword</th>
+                  <th>Sources</th>
+                  <th>Definition</th>
+                </tr>
+              </thead>
+              <tbody>
+                {hawResults.entries.map((e) => (
+                  <tr key={e.id}>
+                    <td>
+                      <Link href={`/entry/${e.id}`}>
+                        {e.headword_display || e.headword}
+                        {e.subscript && <sub>{e.subscript}</sub>}
+                      </Link>
+                    </td>
+                    <td><SourceBadges in_pe={e.in_pe} in_mk={e.in_mk} in_andrews={e.in_andrews} is_from_eh_only={e.is_from_eh_only} /></td>
+                    <td className="small">{e.sense?.[0]?.definition_text?.slice(0, 120) || "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {searchType === "eng-haw" && engResults && (
+            <table>
+              <thead>
+                <tr>
+                  <th>English</th>
+                  <th>Source</th>
+                  <th>Hawaiian Translations</th>
+                </tr>
+              </thead>
+              <tbody>
+                {engResults.entries.map((e) => (
+                  <tr key={e.id}>
+                    <td><strong>{e.english_word}</strong></td>
+                    <td><SourceBadges source={e.source} /></td>
+                    <td>
+                      {e.eng_haw_translation.map((t, i) => (
+                        <span key={t.id}>
+                          {i > 0 && ", "}
+                          {t.target_anchor ? (
+                            <Link href={`/entry/${t.target_anchor}`}>{t.hawaiian_word || t.target_anchor}</Link>
+                          ) : (
+                            t.hawaiian_word || "?"
+                          )}
+                        </span>
+                      ))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          <Pagination
+            currentPage={page}
+            totalItems={totalResults}
+            itemsPerPage={ITEMS_PER_PAGE}
+            basePath="/search"
+            searchParams={{ q: q || "", type: searchType }}
+          />
+        </>
       )}
-    </div>
+    </>
   );
 }
