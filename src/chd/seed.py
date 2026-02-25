@@ -104,6 +104,11 @@ class SupabaseSeeder:
         """Clear all tables via RPC or sequential deletes."""
         # Order matters: child tables first
         tables = [
+            # Phase 2-5 child tables first
+            "wordlist_entry_link", "wordlist_entry", "wordlist",
+            "dictionary_source", "preface", "gloss_source_text",
+            "image_detail", "structural_page",
+            # Original tables
             "word_token", "linked_word", "sub_definition_domain", "sub_definition",
             "sense", "example", "etymology", "cross_ref", "grammar_ref",
             "hawaiian_gloss", "image", "alt_spelling", "entry_topic", "topic",
@@ -492,6 +497,173 @@ class SupabaseSeeder:
                  "full_text": r.get("full_text", ""), "url": r.get("url", "")} for r in refs]
         return self._post("reference", rows)
 
+    # ------------------------------------------------------------------
+    # Phase 2-5 seeders
+    # ------------------------------------------------------------------
+
+    def seed_dictionary_sources(self, data_dir: Path) -> int:
+        """Seed dictionary_source from source_pages.json (editions flattened)."""
+        path = data_dir / "source_pages.json"
+        if not path.exists():
+            return 0
+        pages = load_json(path)
+        rows = []
+        for page in pages:
+            source_page = page.get("filename", "")
+            for ed in page.get("editions", []):
+                rows.append({
+                    "source_page": source_page,
+                    "anchor": ed.get("anchor", ""),
+                    "title": ed.get("title", ""),
+                    "year": ed.get("year"),
+                    "description": ed.get("description"),
+                    "cover_images": ed.get("cover_images", []),
+                    "intro_pdf_url": ed.get("intro_pdf_url"),
+                })
+        return self._post("dictionary_source", rows)
+
+    def seed_prefaces(self, data_dir: Path) -> int:
+        """Seed preface from preface_pages.json."""
+        path = data_dir / "preface_pages.json"
+        if not path.exists():
+            return 0
+        pages = load_json(path)
+        rows = []
+        for p in pages:
+            rows.append({
+                "filename": p.get("filename", ""),
+                "title": p.get("title", ""),
+                "subtitle": p.get("subtitle"),
+                "year_edition": p.get("year_edition"),
+                "prose_html": p.get("prose_html"),
+                "nav_links": p.get("preface_nav_links", []),
+                "images": p.get("images", []),
+                "referenced_assets": p.get("referenced_assets", []),
+            })
+        return self._post("preface", rows)
+
+    def seed_wordlists(self, data_dir: Path) -> tuple[int, int, int]:
+        """Seed wordlist, wordlist_entry, wordlist_entry_link from wordlist_pages.json."""
+        path = data_dir / "wordlist_pages.json"
+        if not path.exists():
+            return 0, 0, 0
+        pages = load_json(path)
+        wl_count = 0
+        we_count = 0
+        link_count = 0
+
+        for page in pages:
+            entries = page.get("entries", [])
+            wl_row = {
+                "filename": page.get("filename", ""),
+                "title": page.get("title", ""),
+                "author": page.get("author"),
+                "year": page.get("year"),
+                "intro_text": page.get("intro_text"),
+                "entry_count": len(entries),
+            }
+            created_wl = self._post_returning("wordlist", [wl_row])
+            if not created_wl:
+                continue
+            wl_id = created_wl[0]["id"]
+            wl_count += 1
+
+            # Prepare wordlist entries with their links stashed
+            we_rows = []
+            for ent in entries:
+                we_rows.append({
+                    "_links": ent.get("modern_hawaiian_links", []),
+                    "wordlist_id": wl_id,
+                    "entry_number": ent.get("number"),
+                    "list_word": ent.get("list_word", ""),
+                    "modern_hawaiian": ent.get("modern_hawaiian"),
+                    "gloss": ent.get("gloss"),
+                    "footnote": ent.get("footnote"),
+                })
+
+            # Insert entries in batches, then their links
+            for i in range(0, len(we_rows), BATCH):
+                batch = we_rows[i:i + BATCH]
+                clean = [{k: v for k, v in r.items() if not k.startswith("_")} for r in batch]
+                created_entries = self._post_returning("wordlist_entry", clean)
+                we_count += len(created_entries)
+
+                lk_rows = []
+                for j, rec in enumerate(batch):
+                    we_id = created_entries[j]["id"]
+                    for lk in rec["_links"]:
+                        lk_rows.append({
+                            "wordlist_entry_id": we_id,
+                            "surface": lk.get("surface", ""),
+                            "target_anchor": lk.get("target_anchor"),
+                            "target_page": lk.get("target_page"),
+                            "link_class": lk.get("link_class"),
+                        })
+                link_count += self._post("wordlist_entry_link", lk_rows)
+
+            print(f"    {page.get('filename', '?')}: {len(entries)} entries")
+
+        return wl_count, we_count, link_count
+
+    def seed_gloss_source_texts(self, data_dir: Path) -> int:
+        """Seed gloss_source_text from glossrefs.json."""
+        path = data_dir / "glossrefs.json"
+        if not path.exists():
+            return 0
+        data = load_json(path)
+        texts = data.get("source_texts", [])
+        rows = []
+        for t in texts:
+            rows.append({
+                "source_number": t.get("number"),
+                "hawaiian_title": t.get("hawaiian_title", ""),
+                "author_info": t.get("author_info"),
+                "publisher": t.get("publisher"),
+                "year": t.get("year"),
+                "page_count": t.get("page_count"),
+                "cover_image_url": t.get("cover_image_url"),
+                "ulukau_url": t.get("ulukau_url"),
+            })
+        return self._post("gloss_source_text", rows)
+
+    def seed_image_details(self, data_dir: Path) -> int:
+        """Seed image_detail from image_detail_pages.json."""
+        path = data_dir / "image_detail_pages.json"
+        if not path.exists():
+            return 0
+        pages = load_json(path)
+        rows = []
+        for p in pages:
+            rows.append({
+                "filename": p.get("filename", ""),
+                "image_url": p.get("image_url", ""),
+                "headword_display": p.get("headword_display"),
+                "caption": p.get("caption"),
+                "source_credit": p.get("source_credit"),
+                "source_link_url": p.get("source_link_url"),
+                "source_link_text": p.get("source_link_text"),
+            })
+        return self._post("image_detail", rows)
+
+    def seed_structural_pages(self, data_dir: Path) -> int:
+        """Seed structural_page from structural_pages.json."""
+        path = data_dir / "structural_pages.json"
+        if not path.exists():
+            return 0
+        pages = load_json(path)
+        rows = []
+        for p in pages:
+            rows.append({
+                "filename": p.get("filename", ""),
+                "title": p.get("title"),
+                "updated": p.get("updated"),
+                "sections": json.dumps(p.get("sections", [])),
+                "internal_links": p.get("internal_links", []),
+                "external_links": p.get("external_links", []),
+                "referenced_assets": p.get("referenced_assets", []),
+            })
+        return self._post("structural_page", rows)
+
     def verify_counts(self):
         """Check row counts via REST API."""
         tables = [
@@ -500,6 +672,9 @@ class SupabaseSeeder:
             "grammar_ref", "hawaiian_gloss", "image", "alt_spelling",
             "topic", "entry_topic", "eng_haw_entry", "eng_haw_translation",
             "concordance", "reference",
+            "dictionary_source", "preface", "wordlist", "wordlist_entry",
+            "wordlist_entry_link", "gloss_source_text", "image_detail",
+            "structural_page",
         ]
         total = 0
         for t in tables:
@@ -575,6 +750,31 @@ def seed_all(data_dir: Path = PROCESSED_DIR):
     print("\nSeeding references...")
     n = seeder.seed_references(data_dir)
     print(f"  references: {n:,}")
+
+    # Phase 2-5 tables
+    print("\nSeeding dictionary sources...")
+    n = seeder.seed_dictionary_sources(data_dir)
+    print(f"  dictionary_sources: {n:,}")
+
+    print("\nSeeding prefaces...")
+    n = seeder.seed_prefaces(data_dir)
+    print(f"  prefaces: {n:,}")
+
+    print("\nSeeding wordlists...")
+    nw, ne, nl = seeder.seed_wordlists(data_dir)
+    print(f"  wordlists: {nw:,}, entries: {ne:,}, links: {nl:,}")
+
+    print("\nSeeding gloss source texts...")
+    n = seeder.seed_gloss_source_texts(data_dir)
+    print(f"  gloss_source_texts: {n:,}")
+
+    print("\nSeeding image details...")
+    n = seeder.seed_image_details(data_dir)
+    print(f"  image_details: {n:,}")
+
+    print("\nSeeding structural pages...")
+    n = seeder.seed_structural_pages(data_dir)
+    print(f"  structural_pages: {n:,}")
 
     print(f"\n{'=' * 60}")
     print("Verifying row counts...")
