@@ -1,0 +1,63 @@
+{
+  "generated_at": "2026-02-24T16:46:48.983198",
+  "note": "Corrected report \u2014 Parker headwords cleaned (pronunciation guides removed), diacritical-insensitive matching applied",
+  "sources": {
+    "main_project": {
+      "unique_headwords": 41801,
+      "description": "Trussel CHD scraper: 59,715 entries, 41,801 unique headwords"
+    },
+    "manomano": {
+      "unique_headwords": 34175,
+      "total_entries": 37446,
+      "description": "ManoMano.io Hawaiian dictionary"
+    },
+    "wehewiki": {
+      "unique_headwords": 20795,
+      "total_entries": 43360,
+      "description": "Wehewiki.org aggregated Hawaiian dictionaries",
+      "source_dicts": {
+        "AN": 6912,
+        "Andrews (1836)": 406,
+        "Combined Hawaiian Dictionary (2020)": 11,
+        "Community Dictionary (2017+)": 56,
+        "Judd/Pukui/Stokes (1943)": 1401,
+        "Kent (1986)": 7685,
+        "Land Terms (1995)": 1344,
+        "MK": 2705,
+        "P1": 6959,
+        "PE": 15307,
+        "Place Names of Hawai\u02bbi (1974)": 27,
+        "Wehiwehi Baibala (1872)": 547
+      }
+    }
+  },
+  "overlaps": {
+    "main_and_manomano": 26965,
+    "main_and_wehewiki": 17784,
+    "manomano_and_wehewiki": 17071,
+    "all_three": 17015
+  },
+  "truly_new_entries": {
+    "description": "Headwords not in main project even after stripping diacriticals",
+    "manomano_only": 6482,
+    "wehewiki_only": 2952,
+    "in_both": 55,
+    "total_unique": 9489,
+    "wehewiki_by_source_dict": {
+      "AN": 2794,
+      "MK": 80,
+      "Wehiwehi Baibala (1872)": 70,
+      "PE": 61,
+      "Land Terms (1995)": 3
+    }
+  },
+  "key_findings": [
+    "Main project has 41,801 unique headwords \u2014 largest single collection",
+    "ManoMano has 6,537 truly new headwords (not in main, even stripped)",
+    "Wehewiki has 3,007 truly new, primarily from Andrews 1865 (2,794) and MK (80)",
+    "Parker 1922 entries: all 6,959 match main project once headwords are cleaned",
+    "Total potential additions: 9,489 unique headwords across both sources",
+    "ManoMano unique entries are mostly Hawaiian-looking compound words and phrases",
+    "Andrews (AN) in Wehewiki contains 2,794 entries not in main \u2014 these represent the 1865 dictionary content that Trussel chose not to include"
+  ]
+}

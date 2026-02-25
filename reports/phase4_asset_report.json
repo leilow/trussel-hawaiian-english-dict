@@ -1,0 +1,173 @@
+{
+  "summary": {
+    "total_files": 3900,
+    "total_size_mb": 1141.6,
+    "total_referenced_assets": 2926,
+    "assets_present": 909,
+    "assets_missing": 2017
+  },
+  "categories": {
+    "pe_pages": {
+      "total_referenced": 386,
+      "present": 386,
+      "missing": 0,
+      "missing_files": []
+    },
+    "eh_pages": {
+      "total_referenced": 1905,
+      "present": 0,
+      "missing": 1905,
+      "missing_files": [
+        "E-4091.pdf",
+        "E-4092.pdf",
+        "E-4093.pdf",
+        "E-4096.pdf",
+        "E-4100.pdf",
+        "E-4101.pdf",
+        "E-4106.pdf",
+        "E-4107.pdf",
+        "E-4108.pdf",
+        "E-4109.pdf",
+        "E-4110.pdf",
+        "E-4111.pdf",
+        "E-4114.pdf",
+        "E-4116.pdf",
+        "E-4118.pdf",
+        "E-4119.pdf",
+        "E-4120.pdf",
+        "E-4121.pdf",
+        "E-4122.pdf",
+        "E-4123.pdf"
+      ],
+      "note": "All 1,905 EH page-image PDFs return HTTP 404 \u2014 not hosted on server"
+    },
+    "text_pdfs": {
+      "total_referenced": 80,
+      "present": 79,
+      "missing": 1,
+      "missing_files": [
+        "texts/.pdf"
+      ]
+    },
+    "parker_pdfs": {
+      "total_referenced": 23,
+      "present": 12,
+      "missing": 11,
+      "missing_files": [
+        "parker-b.pdf",
+        "parker-c.pdf",
+        "parker-d.pdf",
+        "parker-f.pdf",
+        "parker-g.pdf",
+        "parker-j.pdf",
+        "parker-r.pdf",
+        "parker-s.pdf",
+        "parker-t.pdf",
+        "parker-v.pdf",
+        "parker-z.pdf"
+      ],
+      "note": "11 loanword-letter PDFs return HTTP 300 (Parker predates loanwords)"
+    },
+    "glossary_pdfs": {
+      "total_referenced": 10,
+      "present": 7,
+      "missing": 3,
+      "missing_files": [
+        "g394.pdf",
+        "g396.pdf",
+        "g398.pdf"
+      ]
+    },
+    "other_pdfs": {
+      "total_referenced": 21,
+      "present": 19,
+      "missing": 2,
+      "missing_files": [
+        ".pdf",
+        "added.pdf"
+      ]
+    },
+    "images": {
+      "total_referenced": 477,
+      "present": 399,
+      "missing": 78,
+      "missing_files": [
+        "images/keelikolani.jpg",
+        "images/kioea.jpg",
+        "texts/dailybulletin-aug2-1899-p1x.jpg",
+        "texts/dailybulletin-aug2-1899-p2x.jpg",
+        "texts/dailybulletin-aug2-1899-p3x.jpg",
+        "texts/db-8-2-89-masthead.jpg",
+        "texts/hpa-8-3-89-mast.jpg",
+        "texts/hpa-8-3-89-p2.jpg",
+        "texts/m1h1a.jpg",
+        "texts/m1h2a.jpg",
+        "texts/m1h3a.jpg",
+        "texts/m1h4a.jpg",
+        "texts/m2h1a.jpg",
+        "texts/m2h2a1.jpg",
+        "texts/m2h3a.jpg",
+        "texts/m2h4a.jpg",
+        "texts/m3h1a.jpg",
+        "texts/m3h2a.jpg",
+        "texts/m4h1a.jpg",
+        "texts/mcguirenotes.jpg"
+      ]
+    },
+    "assets": {
+      "total_referenced": 24,
+      "present": 7,
+      "missing": 17,
+      "missing_files": [
+        "...</i",
+        "...</span",
+        "MailTo:Kepano@trussel.com",
+        "Mailto:kepano@trussel.com",
+        "Mailto:thurley@staradvertiser.com",
+        "baibala/favicon.ico",
+        "en.wikipedia.org/wiki/Niihau",
+        "haw-",
+        "haw-conc-",
+        "held.css",
+        "highlight.js",
+        "kauakukalahale.ico",
+        "kuk.css",
+        "kuk/Mailto:info@kokuahawaiifoundation.org",
+        "kuk/kauakukalahale.ico",
+        "pou-6",
+        "rev-"
+      ]
+    }
+  },
+  "permanent_failures": {
+    "http_404": [
+      "added.pdf",
+      "images/alala-pic-2017-09-18.jpg",
+      "images/keelikolani.jpg",
+      "images/kioea.jpg"
+    ],
+    "http_300_not_exist": [
+      "g394.pdf",
+      "g396.pdf",
+      "g398.pdf",
+      "held.css",
+      "highlight.js",
+      "images/alala-pic-2016-12-27c.jpg",
+      "kuk/held.css"
+    ],
+    "eh_page_images_404": "1,905 E-*.pdf files \u2014 links exist in HTML but PDFs never uploaded to server",
+    "parker_loanword_300": [
+      "parker-b.pdf",
+      "parker-c.pdf",
+      "parker-d.pdf",
+      "parker-f.pdf",
+      "parker-g.pdf",
+      "parker-j.pdf",
+      "parker-r.pdf",
+      "parker-s.pdf",
+      "parker-t.pdf",
+      "parker-v.pdf",
+      "parker-z.pdf"
+    ]
+  }
+}

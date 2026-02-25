@@ -125,6 +125,17 @@ class HawaiianGloss(CHDModel):
     source_ref: str = ""
 
 
+class ImageDetailPage(CHDModel):
+    """Parsed image detail page (e.g. aalii.htm)."""
+    filename: str = ""
+    image_url: str = ""
+    headword_display: str = ""
+    caption: str = ""
+    source_credit: str = ""
+    source_link_url: str = ""
+    source_link_text: str = ""
+
+
 class ImageInfo(CHDModel):
     """Image metadata for illustrated entries."""
     thumbnail_url: str = ""
@@ -132,6 +143,8 @@ class ImageInfo(CHDModel):
     source_url: str = ""
     alt_text: str = ""
     height: int = 0
+    caption: str = ""
+    source_credit: str = ""
 
 
 # ─── Main Entry Model ────────────────────────────────────────────────────────
@@ -213,8 +226,137 @@ class Reference(CHDModel):
     url: str = ""
 
 
+class TopicalTopic(CHDModel):
+    """A single topic from the topical page."""
+    name: str = ""
+    filename: str = ""
+    entry_count: int = 0
+    description: str = ""
+    description_links: list[Link] = []
+
+
+class TopicalPage(CHDModel):
+    """Full parsed topical.htm page."""
+    title: str = ""
+    topic_count: int = 0
+    topics: list[TopicalTopic] = []
+
+
 class CountsData(CHDModel):
     entries_by_letter: dict[str, int] = {}
     entries_by_source: dict[str, int] = {}
     total_entries: int = 0
     raw_tables: list[dict] = []
+
+
+# ─── Reference & Source Page Models ─────────────────────────────────────────
+
+
+class DictionaryEdition(CHDModel):
+    """A single edition of a dictionary source."""
+    anchor: str = ""
+    title: str = ""
+    year: str = ""
+    description: str = ""
+    cover_images: list[str] = []
+    intro_pdf_url: str = ""
+
+
+class DictionarySourcePage(CHDModel):
+    """Parsed sources-*.htm page."""
+    filename: str = ""
+    title: str = ""
+    updated: str = ""
+    editions: list[DictionaryEdition] = []
+    preface_links: list[str] = []
+    author_images: list[str] = []
+    referenced_assets: list[str] = []
+
+
+class WordlistEntry(CHDModel):
+    """A single word in a historical wordlist."""
+    number: int = 0
+    list_word: str = ""
+    modern_hawaiian: str = ""
+    modern_hawaiian_links: list[LinkedWord] = []
+    gloss: str = ""
+    footnote: str = ""
+
+
+class WordlistPage(CHDModel):
+    """Parsed historical wordlist page."""
+    filename: str = ""
+    title: str = ""
+    author: str = ""
+    year: str = ""
+    intro_text: str = ""
+    sort_links: list[str] = []
+    entries: list[WordlistEntry] = []
+    entry_count: int = 0
+
+
+class GlossSourceText(CHDModel):
+    """A single source text entry from glossrefs.htm."""
+    number: int = 0
+    hawaiian_title: str = ""
+    author_info: str = ""
+    publisher: str = ""
+    year: str = ""
+    page_count: str = ""
+    cover_image_url: str = ""
+    ulukau_url: str = ""
+
+
+class GlossRefsPage(CHDModel):
+    """Parsed glossrefs.htm page."""
+    title: str = ""
+    updated: str = ""
+    source_count: int = 0
+    source_texts: list[GlossSourceText] = []
+    referenced_assets: list[str] = []
+
+
+class IndexEntry(CHDModel):
+    """A single entry in the index or reverse index."""
+    headword: str = ""
+    anchor: str = ""
+    target_page: str = ""
+    target_anchor: str = ""
+    pos: str = ""
+    definition: str = ""
+    source: str = ""  # "PE", "MK", "Andrews"
+
+
+class IndexPage(CHDModel):
+    """Parsed index-{letter}.htm or rev-{vowel}.htm page."""
+    filename: str = ""
+    page_type: str = ""  # "index" or "reverse"
+    letter: str = ""
+    updated: str = ""
+    entry_count: int = 0
+    entries: list[IndexEntry] = []
+    two_letter_combos: list[str] = []
+    referenced_assets: list[str] = []
+
+
+class StructuralPage(CHDModel):
+    """Parsed structural page (intro.htm, texts.htm, etc.)."""
+    filename: str = ""
+    title: str = ""
+    updated: str = ""
+    sections: list[dict] = []
+    internal_links: list[str] = []
+    external_links: list[str] = []
+    referenced_assets: list[str] = []
+
+
+class PrefacePage(CHDModel):
+    """Parsed preface page."""
+    filename: str = ""
+    title: str = ""
+    subtitle: str = ""
+    year_edition: str = ""
+    prose_html: str = ""
+    preface_nav_links: list[str] = []
+    images: list[str] = []
+    referenced_assets: list[str] = []

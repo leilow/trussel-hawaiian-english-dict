@@ -1,0 +1,464 @@
+{
+  "per_letter": {
+    "a": {
+      "trussel_nav_count": 3318,
+      "parsed_count": 4669,
+      "counts_page_count": 616,
+      "discrepancies": [
+        "trussel_nav(3318) != parsed(4669), diff=-1351",
+        "trussel_nav(3318) != counts_json(616), diff=2702",
+        "parsed(4669) != counts_json(616), diff=4053"
+      ]
+    },
+    "e": {
+      "trussel_nav_count": 630,
+      "parsed_count": 869,
+      "counts_page_count": 91,
+      "discrepancies": [
+        "trussel_nav(630) != parsed(869), diff=-239",
+        "trussel_nav(630) != counts_json(91), diff=539",
+        "parsed(869) != counts_json(91), diff=778"
+      ]
+    },
+    "h": {
+      "trussel_nav_count": 7196,
+      "parsed_count": 10397,
+      "counts_page_count": 3429,
+      "discrepancies": [
+        "trussel_nav(7196) != parsed(10397), diff=-3201",
+        "trussel_nav(7196) != counts_json(3429), diff=3767",
+        "parsed(10397) != counts_json(3429), diff=6968"
+      ]
+    },
+    "i": {
+      "trussel_nav_count": 1128,
+      "parsed_count": 1576,
+      "counts_page_count": 366,
+      "discrepancies": [
+        "trussel_nav(1128) != parsed(1576), diff=-448",
+        "trussel_nav(1128) != counts_json(366), diff=762",
+        "parsed(1576) != counts_json(366), diff=1210"
+      ]
+    },
+    "k": {
+      "trussel_nav_count": 8992,
+      "parsed_count": 12047,
+      "counts_page_count": 5188,
+      "discrepancies": [
+        "trussel_nav(8992) != parsed(12047), diff=-3055",
+        "trussel_nav(8992) != counts_json(5188), diff=3804",
+        "parsed(12047) != counts_json(5188), diff=6859"
+      ]
+    },
+    "l": {
+      "trussel_nav_count": 3066,
+      "parsed_count": 4175,
+      "counts_page_count": 1966,
+      "discrepancies": [
+        "trussel_nav(3066) != parsed(4175), diff=-1109",
+        "trussel_nav(3066) != counts_json(1966), diff=1100",
+        "parsed(4175) != counts_json(1966), diff=2209"
+      ]
+    },
+    "m": {
+      "trussel_nav_count": 4507,
+      "parsed_count": 5975,
+      "counts_page_count": 2592,
+      "discrepancies": [
+        "trussel_nav(4507) != parsed(5975), diff=-1468",
+        "trussel_nav(4507) != counts_json(2592), diff=1915",
+        "parsed(5975) != counts_json(2592), diff=3383"
+      ]
+    },
+    "n": {
+      "trussel_nav_count": 1755,
+      "parsed_count": 2416,
+      "counts_page_count": 1080,
+      "discrepancies": [
+        "trussel_nav(1755) != parsed(2416), diff=-661",
+        "trussel_nav(1755) != counts_json(1080), diff=675",
+        "parsed(2416) != counts_json(1080), diff=1336"
+      ]
+    },
+    "o": {
+      "trussel_nav_count": 2109,
+      "parsed_count": 2907,
+      "counts_page_count": 194,
+      "discrepancies": [
+        "trussel_nav(2109) != parsed(2907), diff=-798",
+        "trussel_nav(2109) != counts_json(194), diff=1915",
+        "parsed(2907) != counts_json(194), diff=2713"
+      ]
+    },
+    "p": {
+      "trussel_nav_count": 7467,
+      "parsed_count": 9922,
+      "counts_page_count": 4561,
+      "discrepancies": [
+        "trussel_nav(7467) != parsed(9922), diff=-2455",
+        "trussel_nav(7467) != counts_json(4561), diff=2906",
+        "parsed(9922) != counts_json(4561), diff=5361"
+      ]
+    },
+    "u": {
+      "trussel_nav_count": 1445,
+      "parsed_count": 1995,
+      "counts_page_count": 514,
+      "discrepancies": [
+        "trussel_nav(1445) != parsed(1995), diff=-550",
+        "trussel_nav(1445) != counts_json(514), diff=931",
+        "parsed(1995) != counts_json(514), diff=1481"
+      ]
+    },
+    "w": {
+      "trussel_nav_count": 1402,
+      "parsed_count": 1802,
+      "counts_page_count": 740,
+      "discrepancies": [
+        "trussel_nav(1402) != parsed(1802), diff=-400",
+        "trussel_nav(1402) != counts_json(740), diff=662",
+        "parsed(1802) != counts_json(740), diff=1062"
+      ]
+    },
+    "b": {
+      "trussel_nav_count": null,
+      "parsed_count": 173,
+      "counts_page_count": null
+    },
+    "c": {
+      "trussel_nav_count": null,
+      "parsed_count": 5,
+      "counts_page_count": null
+    },
+    "d": {
+      "trussel_nav_count": null,
+      "parsed_count": 78,
+      "counts_page_count": null
+    },
+    "f": {
+      "trussel_nav_count": null,
+      "parsed_count": 38,
+      "counts_page_count": null
+    },
+    "g": {
+      "trussel_nav_count": null,
+      "parsed_count": 48,
+      "counts_page_count": null
+    },
+    "j": {
+      "trussel_nav_count": null,
+      "parsed_count": 1,
+      "counts_page_count": null
+    },
+    "r": {
+      "trussel_nav_count": null,
+      "parsed_count": 56,
+      "counts_page_count": null
+    },
+    "s": {
+      "trussel_nav_count": null,
+      "parsed_count": 170,
+      "counts_page_count": null
+    },
+    "t": {
+      "trussel_nav_count": null,
+      "parsed_count": 113,
+      "counts_page_count": null
+    },
+    "v": {
+      "trussel_nav_count": null,
+      "parsed_count": 24,
+      "counts_page_count": null
+    },
+    "z": {
+      "trussel_nav_count": null,
+      "parsed_count": 15,
+      "counts_page_count": null
+    }
+  },
+  "layer2_letters": [
+    "b",
+    "c",
+    "d",
+    "f",
+    "g",
+    "j",
+    "r",
+    "s",
+    "t",
+    "v",
+    "z"
+  ],
+  "layer3_combos": {
+    "a": [
+      "aa",
+      "ab",
+      "ac",
+      "ad",
+      "ae",
+      "af",
+      "ag",
+      "ah",
+      "ai",
+      "ak",
+      "al",
+      "am",
+      "an",
+      "ao",
+      "ap",
+      "ar",
+      "as",
+      "at",
+      "au",
+      "av",
+      "aw",
+      "az"
+    ],
+    "e": [
+      "ea",
+      "eb",
+      "ed",
+      "ee",
+      "eg",
+      "eh",
+      "ei",
+      "ek",
+      "el",
+      "em",
+      "en",
+      "eo",
+      "ep",
+      "er",
+      "es",
+      "et",
+      "eu",
+      "ev",
+      "ew"
+    ],
+    "h": [
+      "ha",
+      "he",
+      "hh",
+      "hi",
+      "hk",
+      "hl",
+      "hm",
+      "ho",
+      "hp",
+      "ht",
+      "hu"
+    ],
+    "i": [
+      "ia",
+      "ib",
+      "ie",
+      "ih",
+      "ii",
+      "ik",
+      "il",
+      "im",
+      "in",
+      "io",
+      "ip",
+      "ir",
+      "is",
+      "it",
+      "iu",
+      "iw"
+    ],
+    "k": [
+      "ka",
+      "ke",
+      "kh",
+      "ki",
+      "kk",
+      "kl",
+      "km",
+      "kn",
+      "ko",
+      "kp",
+      "kr",
+      "ku"
+    ],
+    "l": [
+      "la",
+      "le",
+      "li",
+      "lk",
+      "ll",
+      "lo",
+      "lp",
+      "lu"
+    ],
+    "m": [
+      "ma",
+      "me",
+      "mh",
+      "mi",
+      "mk",
+      "ml",
+      "mm",
+      "mo",
+      "ms",
+      "mu"
+    ],
+    "n": [
+      "na",
+      "ne",
+      "ni",
+      "no",
+      "nu"
+    ],
+    "o": [
+      "oa",
+      "od",
+      "oe",
+      "of",
+      "og",
+      "oh",
+      "oi",
+      "ok",
+      "ol",
+      "om",
+      "on",
+      "oo",
+      "op",
+      "or",
+      "os",
+      "ot",
+      "ou",
+      "ow"
+    ],
+    "p": [
+      "pa",
+      "pe",
+      "ph",
+      "pi",
+      "pk",
+      "pl",
+      "pm",
+      "po",
+      "pp",
+      "pu"
+    ],
+    "u": [
+      "ua",
+      "ue",
+      "ug",
+      "uh",
+      "ui",
+      "uk",
+      "ul",
+      "um",
+      "un",
+      "uo",
+      "up",
+      "ur",
+      "us",
+      "ut",
+      "uu",
+      "uw"
+    ],
+    "w": [
+      "wa",
+      "we",
+      "wi",
+      "wo",
+      "wu"
+    ],
+    "b": [
+      "ba",
+      "bc",
+      "be",
+      "bi",
+      "bo",
+      "bu"
+    ],
+    "c": [
+      "ca",
+      "cd",
+      "ce",
+      "ch"
+    ],
+    "d": [
+      "da",
+      "de",
+      "di",
+      "dn",
+      "do",
+      "du"
+    ],
+    "f": [
+      "fa",
+      "fe",
+      "fi",
+      "fm",
+      "fo"
+    ],
+    "g": [
+      "ga",
+      "ge",
+      "gi",
+      "go",
+      "gu"
+    ],
+    "j": [
+      "ju"
+    ],
+    "r": [
+      "ra",
+      "re",
+      "ri",
+      "ro",
+      "ru"
+    ],
+    "s": [
+      "sa",
+      "se",
+      "si",
+      "so",
+      "su"
+    ],
+    "t": [
+      "ta",
+      "te",
+      "ti",
+      "to",
+      "tu"
+    ],
+    "v": [
+      "va",
+      "ve",
+      "vi",
+      "vu"
+    ],
+    "z": [
+      "za",
+      "ze",
+      "zi",
+      "zo",
+      "zu"
+    ]
+  },
+  "summary": {
+    "total_letters_checked": 23,
+    "hawaiian_letters": 12,
+    "loan_letters": 11,
+    "total_discrepancies": 36,
+    "letters_with_discrepancies": [
+      "a",
+      "e",
+      "h",
+      "i",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "u",
+      "w"
+    ],
+    "trussel_nav_total": 43015
+  }
+}

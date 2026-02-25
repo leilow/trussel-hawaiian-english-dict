@@ -1,0 +1,460 @@
+{
+  "pages": [
+    {
+      "filename": "haw-animals.htm",
+      "name": "animals",
+      "trussel_count": 379,
+      "parsed_total": 497,
+      "parsed_main_only": 386,
+      "discrepancy": 7,
+      "errors": []
+    },
+    {
+      "filename": "haw-bananas.htm",
+      "name": "bananas",
+      "trussel_count": 190,
+      "parsed_total": 217,
+      "parsed_main_only": 191,
+      "discrepancy": 1,
+      "errors": []
+    },
+    {
+      "filename": "haw-basic.htm",
+      "name": "Basic Vocabulary",
+      "trussel_count": 1014,
+      "parsed_total": 1024,
+      "parsed_main_only": 1024,
+      "discrepancy": 10,
+      "errors": []
+    },
+    {
+      "filename": "pohinai.htm",
+      "name": "basketball",
+      "trussel_count": 112,
+      "parsed_total": 110,
+      "parsed_main_only": 110,
+      "discrepancy": -2,
+      "errors": []
+    },
+    {
+      "filename": "haw-birds.htm",
+      "name": "birds",
+      "trussel_count": 638,
+      "parsed_total": 875,
+      "parsed_main_only": 647,
+      "discrepancy": 9,
+      "errors": []
+    },
+    {
+      "filename": "haw-body.htm",
+      "name": "body, illness...",
+      "trussel_count": 2244,
+      "parsed_total": 2389,
+      "parsed_main_only": 1691,
+      "discrepancy": -553,
+      "errors": []
+    },
+    {
+      "filename": "haw-canoes.htm",
+      "name": "canoes, watercraft",
+      "trussel_count": 525,
+      "parsed_total": 746,
+      "parsed_main_only": 535,
+      "discrepancy": 10,
+      "errors": []
+    },
+    {
+      "filename": "haw-clothing.htm",
+      "name": "clothing",
+      "trussel_count": 256,
+      "parsed_total": 329,
+      "parsed_main_only": 257,
+      "discrepancy": 1,
+      "errors": []
+    },
+    {
+      "filename": "haw-coconuts.htm",
+      "name": "coconuts",
+      "trussel_count": 169,
+      "parsed_total": 235,
+      "parsed_main_only": 168,
+      "discrepancy": -1,
+      "errors": []
+    },
+    {
+      "filename": "haw-color.htm",
+      "name": "colors",
+      "trussel_count": 183,
+      "parsed_total": 282,
+      "parsed_main_only": 241,
+      "discrepancy": 58,
+      "errors": []
+    },
+    {
+      "filename": "haw-computer.htm",
+      "name": "computer",
+      "trussel_count": 213,
+      "parsed_total": 242,
+      "parsed_main_only": 241,
+      "discrepancy": 28,
+      "errors": []
+    },
+    {
+      "filename": "haw-crabs.htm",
+      "name": "crabs",
+      "trussel_count": 78,
+      "parsed_total": 108,
+      "parsed_main_only": 80,
+      "discrepancy": 2,
+      "errors": []
+    },
+    {
+      "filename": "haw-english.htm",
+      "name": "English loanwords",
+      "trussel_count": 1610,
+      "parsed_total": 1627,
+      "parsed_main_only": 1613,
+      "discrepancy": 3,
+      "errors": []
+    },
+    {
+      "filename": "haw-gaz.htm",
+      "name": "gazetteer",
+      "trussel_count": 4700,
+      "parsed_total": 4659,
+      "parsed_main_only": 4582,
+      "discrepancy": -118,
+      "errors": []
+    },
+    {
+      "filename": "haw-ferns.htm",
+      "name": "ferns",
+      "trussel_count": 185,
+      "parsed_total": 218,
+      "parsed_main_only": 187,
+      "discrepancy": 2,
+      "errors": []
+    },
+    {
+      "filename": "haw-fish.htm",
+      "name": "fish, sea life...",
+      "trussel_count": 1840,
+      "parsed_total": 2388,
+      "parsed_main_only": 1743,
+      "discrepancy": -97,
+      "errors": []
+    },
+    {
+      "filename": "haw-food.htm",
+      "name": "food",
+      "trussel_count": 647,
+      "parsed_total": 849,
+      "parsed_main_only": 663,
+      "discrepancy": 16,
+      "errors": []
+    },
+    {
+      "filename": "haw-hocaus.htm",
+      "name": "ho- causatives",
+      "trussel_count": 3888,
+      "parsed_total": 3888,
+      "parsed_main_only": 3888,
+      "discrepancy": 0,
+      "errors": []
+    },
+    {
+      "filename": "haw-hula.htm",
+      "name": "hula",
+      "trussel_count": 199,
+      "parsed_total": 219,
+      "parsed_main_only": 199,
+      "discrepancy": 0,
+      "errors": []
+    },
+    {
+      "filename": "haw-idiom.htm",
+      "name": "idioms",
+      "trussel_count": 80,
+      "parsed_total": 78,
+      "parsed_main_only": 78,
+      "discrepancy": -2,
+      "errors": []
+    },
+    {
+      "filename": "haw-insects.htm",
+      "name": "insects",
+      "trussel_count": 302,
+      "parsed_total": 390,
+      "parsed_main_only": 302,
+      "discrepancy": 0,
+      "errors": []
+    },
+    {
+      "filename": "haw-islands.htm",
+      "name": "islands",
+      "trussel_count": 1094,
+      "parsed_total": 1349,
+      "parsed_main_only": 1349,
+      "discrepancy": 255,
+      "errors": []
+    },
+    {
+      "filename": "haw-kava.htm",
+      "name": "kava",
+      "trussel_count": 100,
+      "parsed_total": 110,
+      "parsed_main_only": 100,
+      "discrepancy": 0,
+      "errors": []
+    },
+    {
+      "filename": "haw-kewords.htm",
+      "name": "ke-words",
+      "trussel_count": 198,
+      "parsed_total": 190,
+      "parsed_main_only": 174,
+      "discrepancy": -24,
+      "errors": []
+    },
+    {
+      "filename": "haw-lang.htm",
+      "name": "language",
+      "trussel_count": 224,
+      "parsed_total": 256,
+      "parsed_main_only": 228,
+      "discrepancy": 4,
+      "errors": []
+    },
+    {
+      "filename": "haw-law.htm",
+      "name": "law",
+      "trussel_count": 213,
+      "parsed_total": 320,
+      "parsed_main_only": 288,
+      "discrepancy": 75,
+      "errors": []
+    },
+    {
+      "filename": "haw-lei.htm",
+      "name": "lei",
+      "trussel_count": 188,
+      "parsed_total": 207,
+      "parsed_main_only": 192,
+      "discrepancy": 4,
+      "errors": []
+    },
+    {
+      "filename": "haw-lua.htm",
+      "name": "lua (fighting)",
+      "trussel_count": 136,
+      "parsed_total": 143,
+      "parsed_main_only": 137,
+      "discrepancy": 1,
+      "errors": []
+    },
+    {
+      "filename": "haw-math.htm",
+      "name": "mathematics",
+      "trussel_count": 416,
+      "parsed_total": 556,
+      "parsed_main_only": 458,
+      "discrepancy": 42,
+      "errors": []
+    },
+    {
+      "filename": "haw-music.htm",
+      "name": "music",
+      "trussel_count": 747,
+      "parsed_total": 870,
+      "parsed_main_only": 766,
+      "discrepancy": 19,
+      "errors": []
+    },
+    {
+      "filename": "haw-nafinal.htm",
+      "name": "-na words",
+      "trussel_count": 4855,
+      "parsed_total": 4197,
+      "parsed_main_only": 3369,
+      "discrepancy": -1486,
+      "errors": []
+    },
+    {
+      "filename": "haw-names.htm",
+      "name": "Names",
+      "trussel_count": 2138,
+      "parsed_total": 5680,
+      "parsed_main_only": 5680,
+      "discrepancy": 3542,
+      "errors": []
+    },
+    {
+      "filename": "haw-nets.htm",
+      "name": "nets",
+      "trussel_count": 220,
+      "parsed_total": 294,
+      "parsed_main_only": 222,
+      "discrepancy": 2,
+      "errors": []
+    },
+    {
+      "filename": "haw-pandanus.htm",
+      "name": "pandanus",
+      "trussel_count": 136,
+      "parsed_total": 190,
+      "parsed_main_only": 136,
+      "discrepancy": 0,
+      "errors": []
+    },
+    {
+      "filename": "haw-plants.htm",
+      "name": "plants, trees",
+      "trussel_count": 4148,
+      "parsed_total": 4095,
+      "parsed_main_only": 3241,
+      "discrepancy": -907,
+      "errors": []
+    },
+    {
+      "filename": "haw-poi.htm",
+      "name": "poi",
+      "trussel_count": 175,
+      "parsed_total": 207,
+      "parsed_main_only": 177,
+      "discrepancy": 2,
+      "errors": []
+    },
+    {
+      "filename": "haw-rare.htm",
+      "name": "rare",
+      "trussel_count": 1240,
+      "parsed_total": 1239,
+      "parsed_main_only": 1239,
+      "discrepancy": -1,
+      "errors": []
+    },
+    {
+      "filename": "haw-protos.htm",
+      "name": "reconstructions",
+      "trussel_count": 2745,
+      "parsed_total": 2747,
+      "parsed_main_only": 2746,
+      "discrepancy": 1,
+      "errors": []
+    },
+    {
+      "filename": "haw-science.htm",
+      "name": "scientific",
+      "trussel_count": 555,
+      "parsed_total": 507,
+      "parsed_main_only": 499,
+      "discrepancy": -56,
+      "errors": []
+    },
+    {
+      "filename": "haw-seaweed.htm",
+      "name": "seaweed",
+      "trussel_count": 226,
+      "parsed_total": 253,
+      "parsed_main_only": 227,
+      "discrepancy": 1,
+      "errors": []
+    },
+    {
+      "filename": "haw-sports.htm",
+      "name": "sports",
+      "trussel_count": 584,
+      "parsed_total": 788,
+      "parsed_main_only": 670,
+      "discrepancy": 86,
+      "errors": []
+    },
+    {
+      "filename": "haw-stars.htm",
+      "name": "stars...",
+      "trussel_count": 507,
+      "parsed_total": 569,
+      "parsed_main_only": 523,
+      "discrepancy": 16,
+      "errors": []
+    },
+    {
+      "filename": "haw-suffixes.htm",
+      "name": "suffixes",
+      "trussel_count": 248,
+      "parsed_total": 248,
+      "parsed_main_only": 248,
+      "discrepancy": 0,
+      "errors": []
+    },
+    {
+      "filename": "haw-sugar.htm",
+      "name": "sugar cane",
+      "trussel_count": 105,
+      "parsed_total": 130,
+      "parsed_main_only": 107,
+      "discrepancy": 2,
+      "errors": []
+    },
+    {
+      "filename": "haw-sweet.htm",
+      "name": "sweet potatoes",
+      "trussel_count": 285,
+      "parsed_total": 338,
+      "parsed_main_only": 288,
+      "discrepancy": 3,
+      "errors": []
+    },
+    {
+      "filename": "haw-tapa.htm",
+      "name": "tapa",
+      "trussel_count": 347,
+      "parsed_total": 464,
+      "parsed_main_only": 348,
+      "discrepancy": 1,
+      "errors": []
+    },
+    {
+      "filename": "haw-taro.htm",
+      "name": "taro",
+      "trussel_count": 444,
+      "parsed_total": 522,
+      "parsed_main_only": 451,
+      "discrepancy": 7,
+      "errors": []
+    },
+    {
+      "filename": "haw-taropoi.htm",
+      "name": "taro, poi",
+      "trussel_count": 607,
+      "parsed_total": 675,
+      "parsed_main_only": 576,
+      "discrepancy": -31,
+      "errors": []
+    },
+    {
+      "filename": "haw-tools.htm",
+      "name": "tools",
+      "trussel_count": 479,
+      "parsed_total": 574,
+      "parsed_main_only": 404,
+      "discrepancy": -75,
+      "errors": []
+    },
+    {
+      "filename": "haw-wind.htm",
+      "name": "wind, rain, weather",
+      "trussel_count": 849,
+      "parsed_total": 1205,
+      "parsed_main_only": 885,
+      "discrepancy": 36,
+      "errors": []
+    }
+  ],
+  "summary": {
+    "total_pages": 50,
+    "total_entries": 50293,
+    "pages_with_discrepancies": 44,
+    "pages_with_errors": 0
+  }
+}
