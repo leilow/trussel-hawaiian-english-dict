@@ -1,43 +1,69 @@
-import { EntryCard } from "@/components/EntryCard";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getTopicByName, getEntriesByTopic } from "@/lib/queries";
+import { getTopicDisplay, isDisplayableTopic } from "@/lib/topics";
+import { SourceBadges, Pagination } from "@/components/shared";
 
-const mockTopicEntries = [
-  { id: "20", headword: "manu", source: "PE", definition: "Bird, any winged creature." },
-  { id: "21", headword: "ʻalalā", source: "PE", definition: "Hawaiian crow (Corvus hawaiiensis)." },
-  { id: "22", headword: "nēnē", source: "PE", definition: "The Hawaiian goose (Branta sandvicensis), the state bird." },
-  { id: "23", headword: "pueo", source: "PE", definition: "Hawaiian short-eared owl (Asio flammeus sandwichensis)." },
-  { id: "24", headword: "ʻiʻiwi", source: "PE", definition: "A Hawaiian honeycreeper with vermilion plumage (Drepanis coccinea)." },
-  { id: "25", headword: "ʻapapane", source: "PE", definition: "A Hawaiian honeycreeper (Himatione sanguinea)." },
-  { id: "26", headword: "kolea", source: "PE", definition: "Pacific golden plover (Pluvialis fulva)." },
-  { id: "27", headword: "ʻalae", source: "PE", definition: "Hawaiian coot, Hawaiian gallinule, mudhen." },
-];
+const ITEMS_PER_PAGE = 100;
 
 export default async function TopicPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { slug } = await params;
-  const topicName = slug
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+  const sp = await searchParams;
+  const topicName = decodeURIComponent(slug);
+  const page = Math.max(1, parseInt(sp.page || "1", 10));
+
+  if (!isDisplayableTopic(topicName)) notFound();
+
+  const topic = await getTopicByName(topicName);
+  if (!topic) notFound();
+
+  const { entries, total } = await getEntriesByTopic(topic.id, page, ITEMS_PER_PAGE);
+  const displayName = getTopicDisplay(topicName);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-3xl font-bold mb-2">{topicName}</h1>
-      <p className="text-sm text-muted font-mono mb-8">187 entries</p>
+    <>
+      <p><Link href="/topics">&larr; Back to topics</Link></p>
+      <h1>{displayName} ({topicName})</h1>
+      <p className="small muted">{total.toLocaleString()} entries</p>
 
-      <div className="space-y-3">
-        {mockTopicEntries.map((entry) => (
-          <EntryCard
-            key={entry.id}
-            id={entry.id}
-            headword={entry.headword}
-            source={entry.source}
-            definition={entry.definition}
-          />
-        ))}
-      </div>
-    </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Headword</th>
+            <th>Sources</th>
+            <th>Definition</th>
+          </tr>
+        </thead>
+        <tbody>
+          {entries.map((e) => (
+            <tr key={e.id}>
+              <td>
+                <Link href={`/entry/${e.id}`}>
+                  {e.headword_display || e.headword}
+                  {e.subscript && <sub>{e.subscript}</sub>}
+                </Link>
+              </td>
+              <td><SourceBadges in_pe={e.in_pe} in_mk={e.in_mk} in_andrews={e.in_andrews} is_from_eh_only={e.is_from_eh_only} /></td>
+              <td className="small">{e.sense?.[0]?.definition_text?.slice(0, 120) || "—"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {entries.length === 0 && <p className="muted">No entries in this topic.</p>}
+
+      <Pagination
+        currentPage={page}
+        totalItems={total}
+        itemsPerPage={ITEMS_PER_PAGE}
+        basePath={`/topics/${encodeURIComponent(topicName)}`}
+      />
+    </>
   );
 }

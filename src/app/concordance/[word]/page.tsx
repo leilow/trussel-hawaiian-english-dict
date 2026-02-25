@@ -1,44 +1,60 @@
+import Link from "next/link";
+import { getConcordanceByWord } from "@/lib/queries";
+import { Pagination } from "@/components/shared";
+
+const ITEMS_PER_PAGE = 100;
+
 export default async function ConcordanceWordPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ word: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { word } = await params;
-  const decodedWord = decodeURIComponent(word);
+  const sp = await searchParams;
+  const decoded = decodeURIComponent(word);
+  const page = Math.max(1, parseInt(sp.page || "1", 10));
 
-  const mockSentences = [
-    { id: 1, hawaiian: `Ua ${decodedWord} aku nei au iā ia.`, english: `I ${decodedWord} to them.` },
-    { id: 2, hawaiian: `He mea nui ka ${decodedWord} i ka nohona Hawaiʻi.`, english: `The ${decodedWord} is important in Hawaiian life.` },
-    { id: 3, hawaiian: `E ${decodedWord} mai, e ke keiki.`, english: `Please ${decodedWord}, child.` },
-    { id: 4, hawaiian: `ʻO ka ${decodedWord} ka mea maikaʻi loa.`, english: `The ${decodedWord} is the best thing.` },
-    { id: 5, hawaiian: `Ua loaʻa ka ${decodedWord} ma ka moʻolelo kahiko.`, english: `The ${decodedWord} was found in the ancient story.` },
-  ];
+  const { sentences, total } = await getConcordanceByWord(decoded, page, ITEMS_PER_PAGE);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-3xl font-bold mb-2">
-        Concordance: <span className="text-accent">{decodedWord}</span>
-      </h1>
-      <p className="text-sm text-muted font-mono mb-8">5 occurrences</p>
+    <>
+      <p><Link href="/concordance">&larr; Back to concordance</Link></p>
+      <h1>Concordance: {decoded}</h1>
+      <p className="small muted">{total.toLocaleString()} occurrences</p>
 
-      <div className="space-y-3">
-        {mockSentences.map((s) => (
-          <div key={s.id} className="card p-4">
-            <p className="text-foreground leading-relaxed mb-1">
-              {s.hawaiian.split(new RegExp(`(${decodedWord})`, "gi")).map((part, i) =>
-                part.toLowerCase() === decodedWord.toLowerCase() ? (
-                  <mark key={i} className="bg-accent/20 text-foreground px-0.5 rounded">
-                    {part}
-                  </mark>
-                ) : (
-                  <span key={i}>{part}</span>
-                )
-              )}
-            </p>
-            <p className="text-sm text-muted">{s.english}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Hawaiian</th>
+            <th>English</th>
+            <th style={{ width: 100 }}>Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sentences.map((s) => (
+            <tr key={s.id}>
+              <td><em>{s.hawaiian_text}</em></td>
+              <td className="small muted">{s.english_text}</td>
+              <td className="small">
+                {s.parent_entry_anchor && (
+                  <Link href={`/entry/${s.parent_entry_anchor}`}>{s.parent_entry_anchor}</Link>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {sentences.length === 0 && <p className="muted">No entries found for &ldquo;{decoded}&rdquo;.</p>}
+
+      <Pagination
+        currentPage={page}
+        totalItems={total}
+        itemsPerPage={ITEMS_PER_PAGE}
+        basePath={`/concordance/${encodeURIComponent(decoded)}`}
+      />
+    </>
   );
 }
