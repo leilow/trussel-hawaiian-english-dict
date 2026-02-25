@@ -7,7 +7,8 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
-from chd.models import CountsData, Reference
+from chd.links import classify_link
+from chd.models import CountsData, Reference, TopicalPage, TopicalTopic
 from chd.preprocess import parse_html
 
 RAW_DIR = Path(__file__).resolve().parent.parent.parent.parent / "data" / "raw"
@@ -61,24 +62,60 @@ def parse_refs(filepath: Path | None = None) -> list[Reference]:
 
 
 def discover_topical_pages(filepath: Path | None = None) -> list[dict[str, str]]:
+    """Legacy wrapper — returns list of {filename, name} dicts."""
+    page = parse_topical(filepath)
+    return [{"filename": t.filename, "name": t.name} for t in page.topics]
+
+
+def parse_topical(filepath: Path | None = None) -> TopicalPage:
+    """Parse topical.htm into a full TopicalPage with counts and descriptions."""
     if filepath is None:
         filepath = RAW_DIR / "topical.htm"
     if not filepath.exists():
-        return []
+        return TopicalPage()
     html = filepath.read_bytes()
     soup = parse_html(html, fix_p_tags=False)
-    EXCLUDE_PREFIXES = ("eng-", "haw-conc-", "index-", "rev-")
-    EXCLUDE_FILES = {"intro.htm", "counts.htm", "refs.htm", "texts.htm", "glossrefs.htm", "topical.htm"}
-    pages = []
-    seen = set()
-    for a_tag in soup.find_all("a", href=True):
-        href = a_tag["href"]
-        if not href.endswith(".htm") or href in seen:
+
+    # Extract title (h2)
+    title = ""
+    h2 = soup.find("h2")
+    if h2:
+        title = h2.get_text(strip=True)
+
+    # The topic list is in the inner table (rows with 3 cells: name+link, count, description)
+    topics = []
+    for tr in soup.find_all("tr", valign="top"):
+        cells = tr.find_all("td")
+        if len(cells) < 3:
             continue
-        if any(href == f"haw-{l}.htm" for l in ALL_HAW_LETTERS):
+
+        # Cell 0: topic name + link
+        a_tag = cells[0].find("a", href=True)
+        if not a_tag:
             continue
-        if href in EXCLUDE_FILES or any(href.startswith(p) for p in EXCLUDE_PREFIXES):
-            continue
-        seen.add(href)
-        pages.append({"filename": href, "name": a_tag.get_text(strip=True)})
-    return pages
+        name = a_tag.get_text(strip=True)
+        filename = a_tag.get("href", "")
+
+        # Cell 1: entry count
+        count_text = cells[1].get_text(strip=True).replace(",", "")
+        entry_count = int(count_text) if count_text.isdigit() else 0
+
+        # Cell 2: description (may contain links)
+        description = cells[2].get_text(" ", strip=True)
+        desc_links = []
+        for desc_a in cells[2].find_all("a", href=True):
+            desc_links.append(classify_link(desc_a, from_page="topical.htm"))
+
+        topics.append(TopicalTopic(
+            name=name,
+            filename=filename,
+            entry_count=entry_count,
+            description=description,
+            description_links=desc_links,
+        ))
+
+    return TopicalPage(
+        title=title,
+        topic_count=len(topics),
+        topics=topics,
+    )

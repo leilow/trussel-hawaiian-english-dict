@@ -2,7 +2,7 @@
 
 Features:
 - Page manifest covering all page types
-- Dynamic discovery of topical and concordance overflow pages
+- Dynamic discovery of topical, concordance overflow, image, and bible concordance pages
 - Rate limiting (1.5s delay between requests)
 - Skip-if-exists (unless --force)
 - manifest.json log of all downloads
@@ -22,6 +22,7 @@ from bs4 import BeautifulSoup
 
 BASE_URL = "https://trussel2.com/HAW/"
 RAW_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "raw"
+PROCESSED_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "processed"
 DELAY = 1.5  # seconds between requests
 
 # Hawaiian letters (core 12 + 11 loan letters)
@@ -31,6 +32,66 @@ ALL_HAW_LETTERS = HAW_CORE_LETTERS + LOAN_LETTERS
 
 ENG_LETTERS = list("abcdefghijklmnopqrstuvwxyz")
 REV_VOWELS = list("aeiou")
+
+# Wordlist pages (from intro.htm "Earliest Hawaiian word lists" section)
+WORDLIST_PAGES = [
+    "anderson.htm",
+    "samwell.htm",
+    "beresford.htm",
+    "martinez.htm",
+    "spanish1.htm",
+    "quimper.htm",
+    "lisiansky.htm",
+    "campbell.htm",
+    "arago.htm",
+    "bishop.htm",
+    "botta.htm",
+    "dumont.htm",
+]
+
+# Preface pages
+PREFACE_PAGES = [
+    "prefs-57.htm",
+    "prefs-65.htm",
+    "prefs-71.htm",
+    "prefs-86.htm",
+    "prefs-and.htm",
+]
+
+# Reference/source pages
+REFERENCE_PAGES = [
+    "sources-pe.htm",
+    "sources-mk.htm",
+    "sources-an.htm",
+]
+
+# Assets (CSS, JS, images, favicon)
+ASSET_FILES = [
+    "haw.css",
+    "highlighty.js",
+    "favicon.ico",
+    "st0.gif",
+]
+
+# Parker PDFs (12 Hawaiian core letters)
+PARKER_PDFS = [f"parker-{l}.pdf" for l in HAW_CORE_LETTERS]
+
+# Text PDFs (from intro.htm)
+TEXT_PDFS = [
+    "texts/parker-intro.pdf",
+    "texts/schutz-parker.pdf",
+    "texts/ashford.pdf",
+    "andrews-parker.pdf",
+    "jps35-3.pdf",
+]
+
+# Other structural pages
+OTHER_PAGES = [
+    "concord.htm",
+    "recon.htm",
+    "reversehelp.htm",
+    "haw-a-ap.htm",
+]
 
 
 def _build_manifest() -> dict[str, list[str]]:
@@ -49,11 +110,21 @@ def _build_manifest() -> dict[str, list[str]]:
             "glossrefs.htm",
             "topical.htm",
         ],
+        "reference": REFERENCE_PAGES,
+        "prefaces": PREFACE_PAGES,
+        "wordlists": WORDLIST_PAGES,
+        "assets": ASSET_FILES,
+        "pdfs": PARKER_PDFS + TEXT_PDFS,
+        "other": OTHER_PAGES,
     }
 
 
 def download_page(filename: str, raw_dir: Path = RAW_DIR, force: bool = False) -> dict:
-    """Download a single page and save to raw_dir."""
+    """Download a single page and save to raw_dir.
+
+    Handles subdirectory paths (e.g. 'images/foo.jpg', 'texts/bar.pdf',
+    'baibala/baibala-conc-aloha.htm') by creating parent dirs as needed.
+    """
     filepath = raw_dir / filename
     url = BASE_URL + filename
 
@@ -107,6 +178,96 @@ def discover_topical_pages(raw_dir: Path = RAW_DIR) -> list[str]:
             continue
         pages.append(href)
     return pages
+
+
+def discover_image_pages(processed_dir: Path = PROCESSED_DIR) -> tuple[list[str], list[str]]:
+    """Discover image detail pages and image files from parsed entry data.
+
+    Returns (detail_pages, image_files) where:
+    - detail_pages: list of .htm filenames (e.g. 'elepani.htm')
+    - image_files: list of image paths (e.g. 'images/elepani.jpg')
+    """
+    haw_eng_dir = processed_dir / "haw_eng"
+    if not haw_eng_dir.exists():
+        return [], []
+
+    detail_pages: set[str] = set()
+    image_files: set[str] = set()
+
+    for json_file in sorted(haw_eng_dir.glob("*.json")):
+        data = json.loads(json_file.read_text(encoding="utf-8"))
+        for entry in data:
+            for img in entry.get("images", []):
+                thumb = img.get("thumbnail_url", "")
+                full = img.get("full_image_url", "")
+                source = img.get("source_url", "")
+
+                # Collect image file paths (images/*.jpg)
+                if thumb and thumb.startswith("images/"):
+                    image_files.add(thumb)
+                if full and full.startswith("images/"):
+                    image_files.add(full)
+
+                # Derive detail page from source_url or full_image_url
+                # Detail pages are .htm files (e.g. 'elepani.htm')
+                for url in (source, full):
+                    if url and url.endswith(".htm") and "/" not in url:
+                        detail_pages.add(url)
+
+                # If full_image_url is like "elepani.htm", it's actually the detail page
+                if full and full.endswith(".htm") and "/" not in full:
+                    detail_pages.add(full)
+
+                # Derive detail page from thumbnail: images/foo-s.jpg → foo.htm
+                # or images/foo.jpg → foo.htm
+                if thumb and thumb.startswith("images/"):
+                    basename = thumb.rsplit("/", 1)[-1]
+                    name = basename.rsplit(".", 1)[0]
+                    # Strip -s suffix (small version)
+                    if name.endswith("-s"):
+                        name = name[:-2]
+                    detail_pages.add(f"{name}.htm")
+
+    return sorted(detail_pages), sorted(image_files)
+
+
+def discover_bible_concordance(raw_dir: Path = RAW_DIR) -> list[str]:
+    """Discover Bible concordance pages from bc links in dictionary pages.
+
+    These are in baibala/ subdirectory, e.g. 'baibala/baibala-conc-aloha.htm'.
+    """
+    bc_pages: set[str] = set()
+    for htm_file in sorted(raw_dir.glob("haw-*.htm")):
+        # Skip concordance and topical pages
+        name = htm_file.name
+        if "conc" in name:
+            continue
+        soup = BeautifulSoup(htm_file.read_bytes(), "lxml")
+        for a_tag in soup.find_all("a", class_="bc"):
+            href = a_tag.get("href", "")
+            if href and "baibala" in href:
+                bc_pages.add(href)
+    return sorted(bc_pages)
+
+
+def discover_intro_images(raw_dir: Path = RAW_DIR) -> list[str]:
+    """Discover image files referenced in intro.htm (book covers, etc.)."""
+    intro_path = raw_dir / "intro.htm"
+    if not intro_path.exists():
+        return []
+
+    soup = BeautifulSoup(intro_path.read_bytes(), "lxml")
+    images: set[str] = set()
+    for img_tag in soup.find_all("img"):
+        src = img_tag.get("src", "")
+        if src and src.startswith("images/"):
+            images.add(src)
+    # Also get linked images (e.g. <a href="images/leg-act.jpg">)
+    for a_tag in soup.find_all("a", href=True):
+        href = a_tag["href"]
+        if href.startswith("images/") and (href.endswith(".jpg") or href.endswith(".gif") or href.endswith(".png")):
+            images.add(href)
+    return sorted(images)
 
 
 def discover_concordance_overflow(raw_dir: Path = RAW_DIR) -> list[str]:
@@ -184,6 +345,51 @@ def download_all(
                     if entry["status"] == "downloaded":
                         time.sleep(DELAY)
 
+        if not categories or "images" in categories:
+            detail_pages, _ = discover_image_pages()
+            if detail_pages:
+                print(f"\n{'=' * 60}")
+                print(f"Discovered {len(detail_pages)} image detail pages")
+                print(f"{'=' * 60}")
+                for filename in detail_pages:
+                    entry = download_page(filename, raw_dir, force)
+                    results.append(entry)
+                    icon = "+" if entry["status"] == "downloaded" else "."
+                    print(f"  {icon} {filename} ({entry['status']})")
+                    if entry["status"] == "downloaded":
+                        time.sleep(DELAY)
+
+        if not categories or "image_files" in categories:
+            _, img_files = discover_image_pages()
+            # Also include images from intro.htm
+            intro_imgs = discover_intro_images(raw_dir)
+            all_imgs = sorted(set(img_files) | set(intro_imgs))
+            if all_imgs:
+                print(f"\n{'=' * 60}")
+                print(f"Discovered {len(all_imgs)} image files")
+                print(f"{'=' * 60}")
+                for filename in all_imgs:
+                    entry = download_page(filename, raw_dir, force)
+                    results.append(entry)
+                    icon = "+" if entry["status"] == "downloaded" else "."
+                    print(f"  {icon} {filename} ({entry['status']})")
+                    if entry["status"] == "downloaded":
+                        time.sleep(DELAY)
+
+        if not categories or "bible_conc" in categories:
+            bc_pages = discover_bible_concordance(raw_dir)
+            if bc_pages:
+                print(f"\n{'=' * 60}")
+                print(f"Discovered {len(bc_pages)} Bible concordance pages")
+                print(f"{'=' * 60}")
+                for filename in bc_pages:
+                    entry = download_page(filename, raw_dir, force)
+                    results.append(entry)
+                    icon = "+" if entry["status"] == "downloaded" else "."
+                    print(f"  {icon} {filename} ({entry['status']})")
+                    if entry["status"] == "downloaded":
+                        time.sleep(DELAY)
+
     manifest_path = raw_dir / "manifest.json"
     manifest_data = {
         "download_date": datetime.now(timezone.utc).isoformat(),
@@ -209,15 +415,21 @@ def download_all(
 
 
 def main():
+    all_categories = [
+        "haw_eng", "eng_haw", "concordance", "index", "reverse_index", "support",
+        "topical",  # dynamic discovery
+        "reference", "prefaces", "wordlists", "assets", "pdfs", "other",
+        "images", "image_files", "bible_conc",  # dynamic discovery
+    ]
     parser = argparse.ArgumentParser(description="Download raw HTML pages from trussel2.com/HAW/")
     parser.add_argument(
         "--category",
-        choices=["haw_eng", "eng_haw", "concordance", "index", "reverse_index", "support", "topical"],
+        choices=all_categories,
         nargs="+",
         help="Download only specific categories",
     )
     parser.add_argument("--force", action="store_true", help="Re-download even if files already exist")
-    parser.add_argument("--no-dynamic", action="store_true", help="Skip dynamic discovery of topical/overflow pages")
+    parser.add_argument("--no-dynamic", action="store_true", help="Skip dynamic discovery of topical/overflow/image/bible pages")
 
     args = parser.parse_args()
     download_all(
